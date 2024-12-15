@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ReviseRecord.mapper.ReviseRecordMapper">
+
+    <resultMap type="ReviseRecord" id="ReviseRecordResult">
+        <result property="reviseId"    column="revise_id"    />
+        <result property="wbs"    column="wbs"    />
+        <result property="checkItem"    column="check_item"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="photos"    column="photos"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="picNumber"    column="pic_number"    />
+    </resultMap>
+
+    <sql id="selectReviseRecordVo">
+        select revise_id, wbs, check_item, question_description, photos, check_time, upload_time, pic_number from revise_record
+    </sql>
+
+    <select id="selectReviseRecordList" parameterType="ReviseRecord" resultMap="ReviseRecordResult">
+        <include refid="selectReviseRecordVo"/>
+        <where>
+            <if test="wbs != null  and wbs != ''"> and wbs = #{wbs}</if>
+            <if test="checkItem != null  and checkItem != ''"> and check_item = #{checkItem}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="params.beginUploadTime != null and params.beginUploadTime != '' and params.endUploadTime != null and params.endUploadTime != ''"> and upload_time between #{params.beginUploadTime} and #{params.endUploadTime}</if>
+            <if test="picNumber != null "> and pic_number = #{picNumber}</if>
+        </where>
+    </select>
+
+    <select id="selectReviseRecordByReviseId" parameterType="Long" resultMap="ReviseRecordResult">
+        <include refid="selectReviseRecordVo"/>
+        where revise_id = #{reviseId}
+    </select>
+
+    <insert id="insertReviseRecord" parameterType="ReviseRecord" useGeneratedKeys="true" keyProperty="reviseId">
+        insert into revise_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">wbs,</if>
+            <if test="checkItem != null">check_item,</if>
+            <if test="questionDescription != null">question_description,</if>
+            <if test="photos != null">photos,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="picNumber != null">pic_number,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">#{wbs},</if>
+            <if test="checkItem != null">#{checkItem},</if>
+            <if test="questionDescription != null">#{questionDescription},</if>
+            <if test="photos != null">#{photos},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="picNumber != null">#{picNumber},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReviseRecord" parameterType="ReviseRecord">
+        update revise_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wbs != null">wbs = #{wbs},</if>
+            <if test="checkItem != null">check_item = #{checkItem},</if>
+            <if test="questionDescription != null">question_description = #{questionDescription},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="picNumber != null">pic_number = #{picNumber},</if>
+        </trim>
+        where revise_id = #{reviseId}
+    </update>
+
+    <delete id="deleteReviseRecordByReviseId" parameterType="Long">
+        delete from revise_record where revise_id = #{reviseId}
+    </delete>
+
+    <delete id="deleteReviseRecordByReviseIds" parameterType="String">
+        delete from revise_record where revise_id in
+        <foreach item="reviseId" collection="array" open="(" separator="," close=")">
+            #{reviseId}
+        </foreach>
+    </delete>
+</mapper>

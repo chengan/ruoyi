@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.TextCheck.mapper.TextCheckMapper">
+    
+    <resultMap type="TextCheck" id="TextCheckResult">
+        <result property="taskId"    column="task_id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="checkResult"    column="check_result"    />
+        <result property="photos"    column="photos"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="rectificationMeasures"    column="rectification_measures"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="chairman"    column="chairman"    />
+    </resultMap>
+
+    <sql id="selectTextCheckVo">
+        select task_id, item_name, company_name, parent_id, check_result, photos, question_description, rectification_measures, check_time, chairman from text_check
+    </sql>
+
+    <select id="selectTextCheckList" parameterType="TextCheck" resultMap="TextCheckResult">
+        <include refid="selectTextCheckVo"/>
+        <where>  
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="checkResult != null  and checkResult != ''"> and check_result = #{checkResult}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="chairman != null "> and chairman = #{chairman}</if>
+        </where>
+    </select>
+    
+    <select id="selectTextCheckByTaskId" parameterType="Long" resultMap="TextCheckResult">
+        <include refid="selectTextCheckVo"/>
+        where task_id = #{taskId}
+    </select>
+
+    <insert id="insertTextCheck" parameterType="TextCheck" useGeneratedKeys="true" keyProperty="taskId">
+        insert into text_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="itemName != null and itemName != ''">item_name,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="checkResult != null and checkResult != ''">check_result,</if>
+            <if test="photos != null">photos,</if>
+            <if test="questionDescription != null">question_description,</if>
+            <if test="rectificationMeasures != null">rectification_measures,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="chairman != null">chairman,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="itemName != null and itemName != ''">#{itemName},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="checkResult != null and checkResult != ''">#{checkResult},</if>
+            <if test="photos != null">#{photos},</if>
+            <if test="questionDescription != null">#{questionDescription},</if>
+            <if test="rectificationMeasures != null">#{rectificationMeasures},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="chairman != null">#{chairman},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTextCheck" parameterType="TextCheck">
+        update text_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="itemName != null and itemName != ''">item_name = #{itemName},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="checkResult != null and checkResult != ''">check_result = #{checkResult},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="questionDescription != null">question_description = #{questionDescription},</if>
+            <if test="rectificationMeasures != null">rectification_measures = #{rectificationMeasures},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="chairman != null">chairman = #{chairman},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteTextCheckByTaskId" parameterType="Long">
+        delete from text_check where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteTextCheckByTaskIds" parameterType="String">
+        delete from text_check where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+</mapper>

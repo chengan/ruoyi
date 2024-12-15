@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.tracks1.mapper.Tracks1Mapper">
+    
+    <resultMap type="Tracks1" id="Tracks1Result">
+        <result property="id"    column="id"    />
+        <result property="wbs"    column="wbs"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="checkItem"    column="check_item"    />
+        <result property="company"    column="company"    />
+        <result property="result"    column="result"    />
+        <result property="photo"    column="photo"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="revise"    column="revise"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="picNumber"    column="pic_number"    />
+    </resultMap>
+
+    <sql id="selectTracks1Vo">
+        select id, wbs, item_id, check_item, company, result, photo, question_description, revise, check_time, pic_number from tracks1
+    </sql>
+
+    <select id="selectTracks1List" parameterType="Tracks1" resultMap="Tracks1Result">
+        <include refid="selectTracks1Vo"/>
+        <where>  
+            <if test="wbs != null  and wbs != ''"> and wbs = #{wbs}</if>
+            <if test="itemId != null "> and item_id = #{itemId}</if>
+            <if test="checkItem != null  and checkItem != ''"> and check_item = #{checkItem}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="picNumber != null "> and pic_number = #{picNumber}</if>
+            <if test="startDate != null and startDate != ''">
+                AND DATE_FORMAT(check_time,'%Y-%m-%d') &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(check_time,'%Y-%m-%d') &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectTracks1ById" parameterType="Long" resultMap="Tracks1Result">
+        <include refid="selectTracks1Vo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTracks1" parameterType="Tracks1" useGeneratedKeys="true" keyProperty="id">
+        insert into tracks1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">wbs,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="checkItem != null">check_item,</if>
+            <if test="company != null">company,</if>
+            <if test="result != null">result,</if>
+            <if test="photo != null">photo,</if>
+            <if test="questionDescription != null">question_description,</if>
+            <if test="revise != null">revise,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="picNumber != null">pic_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">#{wbs},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="checkItem != null">#{checkItem},</if>
+            <if test="company != null">#{company},</if>
+            <if test="result != null">#{result},</if>
+            <if test="photo != null">#{photo},</if>
+            <if test="questionDescription != null">#{questionDescription},</if>
+            <if test="revise != null">#{revise},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="picNumber != null">#{picNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTracks1" parameterType="Tracks1">
+        update tracks1
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wbs != null">wbs = #{wbs},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="checkItem != null">check_item = #{checkItem},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="photo != null">photo = #{photo},</if>
+            <if test="questionDescription != null">question_description = #{questionDescription},</if>
+            <if test="revise != null">revise = #{revise},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="picNumber != null">pic_number = #{picNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTracks1ById" parameterType="Long">
+        delete from tracks1 where id = #{id}
+    </delete>
+
+    <delete id="deleteTracks1ByIds" parameterType="String">
+        delete from tracks1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

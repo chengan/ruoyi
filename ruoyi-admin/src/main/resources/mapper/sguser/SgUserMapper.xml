@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.sguser.mapper.SgUserMapper">
+    
+    <resultMap type="SgUser" id="SgUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="gender"    column="gender"    />
+        <result property="userRole"    column="user_role"    />
+        <result property="userPassword"    column="user_password"    />
+    </resultMap>
+
+    <sql id="selectSgUserVo">
+        select user_id, user_name, gender, user_role, user_password from sg_user
+    </sql>
+
+    <select id="selectSgUserList" parameterType="SgUser" resultMap="SgUserResult">
+        <include refid="selectSgUserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="userRole != null  and userRole != ''"> and user_role = #{userRole}</if>
+            <if test="userPassword != null  and userPassword != ''"> and user_password = #{userPassword}</if>
+        </where>
+    </select>
+    
+    <select id="selectSgUserByUserId" parameterType="Long" resultMap="SgUserResult">
+        <include refid="selectSgUserVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertSgUser" parameterType="SgUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into sg_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="gender != null and gender != ''">gender,</if>
+            <if test="userRole != null and userRole != ''">user_role,</if>
+            <if test="userPassword != null and userPassword != ''">user_password,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="gender != null and gender != ''">#{gender},</if>
+            <if test="userRole != null and userRole != ''">#{userRole},</if>
+            <if test="userPassword != null and userPassword != ''">#{userPassword},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSgUser" parameterType="SgUser">
+        update sg_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="userRole != null and userRole != ''">user_role = #{userRole},</if>
+            <if test="userPassword != null and userPassword != ''">user_password = #{userPassword},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteSgUserByUserId" parameterType="Long">
+        delete from sg_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSgUserByUserIds" parameterType="String">
+        delete from sg_user where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

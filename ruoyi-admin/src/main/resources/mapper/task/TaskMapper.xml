@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.task.mapper.TaskMapper">
+    
+    <resultMap type="Task" id="TaskResult">
+        <result property="taskId"    column="taskId"    />
+        <result property="projectId"    column="projectId"    />
+        <result property="groupId"    column="groupId"    />
+        <result property="vId"    column="vId"    />
+        <result property="taskName"    column="taskName"    />
+        <result property="managerId"    column="managerId"    />
+        <result property="company"    column="company"    />
+        <result property="startDate"    column="startDate"    />
+        <result property="updateDate"    column="updateDate"    />
+        <result property="endDate"    column="endDate"    />
+        <result property="status"    column="status"    />
+        <result property="file"    column="file"    />
+        <result property="duration"    column="duration"    />
+        <result property="planProgress"    column="planProgress"    />
+        <result property="proStatus"    column="proStatus"    />
+        <result property="progress"    column="progress"    />
+        <result property="preId"    column="preId"    />
+    </resultMap>
+
+    <sql id="selectTaskVo">
+        select taskId, projectId, groupId, vId, taskName, 
+            managerId, company, startDate, updateDate, endDate, 
+            status, file, duration, planProgress, proStatus, 
+            progress, preId
+        from task
+    </sql>
+
+    <select id="selectTaskList" parameterType="Task" resultMap="TaskResult">
+        <include refid="selectTaskVo"/>
+        <where>  
+            <if test="projectId != null "> and projectId = #{projectId}</if>
+            <if test="taskName != null  and taskName != ''"> and taskName like concat('%', #{taskName}, '%')</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="startDate != null "> and startDate = #{startDate}</if>
+            <if test="endDate != null "> and endDate = #{endDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="preId != null "> and preId = #{preId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTaskByTaskId" parameterType="Long" resultMap="TaskResult">
+        <include refid="selectTaskVo"/>
+        where taskId = #{taskId}
+    </select>
+
+    <insert id="insertTask" parameterType="Task" useGeneratedKeys="true" keyProperty="taskId">
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">projectId,</if>
+            <if test="groupId != null">groupId,</if>
+            <if test="vId != null">vId,</if>
+            <if test="taskName != null">taskName,</if>
+            <if test="managerId != null">managerId,</if>
+            <if test="company != null">company,</if>
+            <if test="startDate != null">startDate,</if>
+            <if test="updateDate != null">updateDate,</if>
+            <if test="endDate != null">endDate,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="file != null">file,</if>
+            <if test="duration != null">duration,</if>
+            <if test="planProgress != null">planProgress,</if>
+            <if test="proStatus != null">proStatus,</if>
+            <if test="progress != null">progress,</if>
+            <if test="preId != null">preId,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="vId != null">#{vId},</if>
+            <if test="taskName != null">#{taskName},</if>
+            <if test="managerId != null">#{managerId},</if>
+            <if test="company != null">#{company},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="updateDate != null">#{updateDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="file != null">#{file},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="planProgress != null">#{planProgress},</if>
+            <if test="proStatus != null">#{proStatus},</if>
+            <if test="progress != null">#{progress},</if>
+            <if test="preId != null">#{preId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTask" parameterType="Task">
+        update task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">projectId = #{projectId},</if>
+            <if test="groupId != null">groupId = #{groupId},</if>
+            <if test="vId != null">vId = #{vId},</if>
+            <if test="taskName != null">taskName = #{taskName},</if>
+            <if test="managerId != null">managerId = #{managerId},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="startDate != null">startDate = #{startDate},</if>
+            <if test="updateDate != null">updateDate = #{updateDate},</if>
+            <if test="endDate != null">endDate = #{endDate},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="planProgress != null">planProgress = #{planProgress},</if>
+            <if test="proStatus != null">proStatus = #{proStatus},</if>
+            <if test="progress != null">progress = #{progress},</if>
+            <if test="preId != null">preId = #{preId},</if>
+        </trim>
+        where taskId = #{taskId}
+    </update>
+
+    <delete id="deleteTaskByTaskId" parameterType="Long">
+        delete from task where taskId = #{taskId}
+    </delete>
+
+    <delete id="deleteTaskByTaskIds" parameterType="String">
+        delete from task where taskId in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+
+    <!-- 查询WBS树形列表 -->
+    <select id="selectAllTaskList" resultMap="TaskResult">
+        select 
+            taskId, 
+            projectId, 
+            groupId,
+            vId,
+            taskName, 
+            company,
+            startDate, 
+            endDate, 
+            status, 
+            preId
+        from task
+        order by projectId, groupId, vId
+    </select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.acceptance.mapper.CompletionAcceptanceMapper">
+    
+    <resultMap type="CompletionAcceptance" id="CompletionAcceptanceResult">
+        <result property="reportId"    column="report_id"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="acceptanceItem"    column="acceptance_item"    />
+        <result property="acceptanceResult"    column="acceptance_result"    />
+        <result property="acceptanceTime"    column="acceptance_time"    />
+        <result property="picNumber"    column="pic_number"    />
+    </resultMap>
+
+    <sql id="selectCompletionAcceptanceVo">
+        select report_id, project_id, acceptance_item, acceptance_result, acceptance_time, pic_number from completion_acceptance
+    </sql>
+
+    <select id="selectCompletionAcceptanceList" parameterType="CompletionAcceptance" resultMap="CompletionAcceptanceResult">
+        <include refid="selectCompletionAcceptanceVo"/>
+        <where>  
+            <if test="reportId != null "> and report_id = #{reportId}</if>
+            <if test="projectId != null "> and project_id = #{projectId}</if>
+            <if test="acceptanceItem != null  and acceptanceItem != ''"> and acceptance_item = #{acceptanceItem}</if>
+            <if test="acceptanceResult != null  and acceptanceResult != ''"> and acceptance_result = #{acceptanceResult}</if>
+            <if test="acceptanceTime != null "> and acceptance_time = #{acceptanceTime}</if>
+            <if test="picNumber != null "> and pic_number = #{picNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectCompletionAcceptanceByReportId" parameterType="Long" resultMap="CompletionAcceptanceResult">
+        <include refid="selectCompletionAcceptanceVo"/>
+        where report_id = #{reportId}
+    </select>
+
+    <insert id="insertCompletionAcceptance" parameterType="CompletionAcceptance">
+        insert into completion_acceptance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reportId != null">report_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="acceptanceItem != null and acceptanceItem != ''">acceptance_item,</if>
+            <if test="acceptanceResult != null and acceptanceResult != ''">acceptance_result,</if>
+            <if test="acceptanceTime != null">acceptance_time,</if>
+            <if test="picNumber != null">pic_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reportId != null">#{reportId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="acceptanceItem != null and acceptanceItem != ''">#{acceptanceItem},</if>
+            <if test="acceptanceResult != null and acceptanceResult != ''">#{acceptanceResult},</if>
+            <if test="acceptanceTime != null">#{acceptanceTime},</if>
+            <if test="picNumber != null">#{picNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCompletionAcceptance" parameterType="CompletionAcceptance">
+        update completion_acceptance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="acceptanceItem != null and acceptanceItem != ''">acceptance_item = #{acceptanceItem},</if>
+            <if test="acceptanceResult != null and acceptanceResult != ''">acceptance_result = #{acceptanceResult},</if>
+            <if test="acceptanceTime != null">acceptance_time = #{acceptanceTime},</if>
+            <if test="picNumber != null">pic_number = #{picNumber},</if>
+        </trim>
+        where report_id = #{reportId}
+    </update>
+
+    <delete id="deleteCompletionAcceptanceByReportId" parameterType="Long">
+        delete from completion_acceptance where report_id = #{reportId}
+    </delete>
+
+    <delete id="deleteCompletionAcceptanceByReportIds" parameterType="String">
+        delete from completion_acceptance where report_id in 
+        <foreach item="reportId" collection="array" open="(" separator="," close=")">
+            #{reportId}
+        </foreach>
+    </delete>
+</mapper>

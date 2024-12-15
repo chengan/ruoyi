@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.QualityCheckPro.mapper.QualityCheckProMapper">
+    
+    <resultMap type="QualityCheckPro" id="QualityCheckProResult">
+        <result property="taskId"    column="task_id"    />
+        <result property="itemWbs"    column="item_wbs"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="checkResult"    column="check_result"    />
+        <result property="photos"    column="photos"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="rectificationMeasures"    column="rectification_measures"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="chairman"    column="chairman"    />
+    </resultMap>
+
+    <sql id="selectQualityCheckProVo">
+        select task_id, item_wbs, task_name, item_name, company_name, parent_id, check_result, photos, question_description, rectification_measures, check_time, chairman from quality_check_pro
+    </sql>
+
+    <select id="selectQualityCheckProList" parameterType="QualityCheckPro" resultMap="QualityCheckProResult">
+        <include refid="selectQualityCheckProVo"/>
+        <where>  
+            <if test="itemWbs != null  and itemWbs != ''"> and item_wbs = #{itemWbs}</if>
+            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+            <if test="checkResult != null  and checkResult != ''"> and check_result = #{checkResult}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="chairman != null "> and chairman = #{chairman}</if>
+        </where>
+    </select>
+    
+    <select id="selectQualityCheckProByTaskId" parameterType="Long" resultMap="QualityCheckProResult">
+        <include refid="selectQualityCheckProVo"/>
+        where task_id = #{taskId}
+    </select>
+
+
+    <select id="selectQualityCheckPro" resultType="com.ruoyi.QualityCheckPro.domain.Vo.CheckVo">
+        select quality_check_pro.*,sg_user.user_name
+        from quality_check_pro,sg_user
+        where quality_check_pro.chairman = sg_user.user_id
+    </select>
+
+    <insert id="insertQualityCheckPro" parameterType="QualityCheckPro" useGeneratedKeys="true" keyProperty="taskId">
+        insert into quality_check_pro
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="itemWbs != null and itemWbs != ''">item_wbs,</if>
+            <if test="taskName != null">task_name,</if>
+            <if test="itemName != null">item_name,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="checkResult != null">check_result,</if>
+            <if test="photos != null">photos,</if>
+            <if test="questionDescription != null">question_description,</if>
+            <if test="rectificationMeasures != null">rectification_measures,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="chairman != null">chairman,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="itemWbs != null and itemWbs != ''">#{itemWbs},</if>
+            <if test="taskName != null">#{taskName},</if>
+            <if test="itemName != null">#{itemName},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="checkResult != null">#{checkResult},</if>
+            <if test="photos != null">#{photos},</if>
+            <if test="questionDescription != null">#{questionDescription},</if>
+            <if test="rectificationMeasures != null">#{rectificationMeasures},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="chairman != null">#{chairman},</if>
+         </trim>
+    </insert>
+
+    <update id="updateQualityCheckPro" parameterType="QualityCheckPro">
+        update quality_check_pro
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="itemWbs != null and itemWbs != ''">item_wbs = #{itemWbs},</if>
+            <if test="taskName != null">task_name = #{taskName},</if>
+            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="checkResult != null">check_result = #{checkResult},</if>
+            <if test="photos != null">photos = #{photos},</if>
+            <if test="questionDescription != null">question_description = #{questionDescription},</if>
+            <if test="rectificationMeasures != null">rectification_measures = #{rectificationMeasures},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="chairman != null">chairman = #{chairman},</if>
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <delete id="deleteQualityCheckProByTaskId" parameterType="Long">
+        delete from quality_check_pro where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteQualityCheckProByTaskIds" parameterType="String">
+        delete from quality_check_pro where task_id in 
+        <foreach item="taskId" collection="array" open="(" separator="," close=")">
+            #{taskId}
+        </foreach>
+    </delete>
+</mapper>

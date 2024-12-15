@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.qualitycheck.mapper.QualityCheckMapper">
+    
+    <resultMap type="QualityCheck" id="QualityCheckResult">
+        <result property="checkId"    column="check_id"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="checkItem"    column="check_item"    />
+        <result property="checkStandard"    column="check_standard"    />
+        <result property="photos"    column="photos"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="checkResult"    column="check_result"    />
+        <result property="rectificationMeasures"    column="rectification_measures"    />
+        <result property="rectificationEffect"    column="rectification_effect"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="picNumber"    column="pic_number"    />
+    </resultMap>
+
+    <sql id="selectQualityCheckVo">
+        select check_id, project_id, check_item, check_standard, photos, question_description, check_result, rectification_measures, rectification_effect, check_time, pic_number from quality_check
+    </sql>
+
+    <select id="selectQualityCheckList" parameterType="QualityCheck" resultMap="QualityCheckResult">
+        <include refid="selectQualityCheckVo"/>
+        <where>  
+            <if test="projectId != null "> and project_id = #{projectId}</if>
+            <if test="checkItem != null  and checkItem != ''"> and check_item = #{checkItem}</if>
+            <if test="checkStandard != null  and checkStandard != ''"> and check_standard = #{checkStandard}</if>
+            <if test="photos != null  and photos != ''"> and photos = #{photos}</if>
+            <if test="questionDescription != null  and questionDescription != ''"> and question_description = #{questionDescription}</if>
+            <if test="checkResult != null  and checkResult != ''"> and check_result = #{checkResult}</if>
+            <if test="rectificationMeasures != null  and rectificationMeasures != ''"> and rectification_measures = #{rectificationMeasures}</if>
+            <if test="rectificationEffect != null  and rectificationEffect != ''"> and rectification_effect = #{rectificationEffect}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="picNumber != null "> and pic_number = #{picNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectQualityCheckByCheckId" parameterType="Long" resultMap="QualityCheckResult">
+        <include refid="selectQualityCheckVo"/>
+        where check_id = #{checkId}
+    </select>
+
+    <insert id="insertQualityCheck" parameterType="QualityCheck">
+        insert into quality_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">check_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="checkItem != null and checkItem != ''">check_item,</if>
+            <if test="checkStandard != null and checkStandard != ''">check_standard,</if>
+            <if test="photos != null and photos != ''">photos,</if>
+            <if test="questionDescription != null and questionDescription != ''">question_description,</if>
+            <if test="checkResult != null and checkResult != ''">check_result,</if>
+            <if test="rectificationMeasures != null and rectificationMeasures != ''">rectification_measures,</if>
+            <if test="rectificationEffect != null and rectificationEffect != ''">rectification_effect,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="picNumber != null">pic_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">#{checkId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="checkItem != null and checkItem != ''">#{checkItem},</if>
+            <if test="checkStandard != null and checkStandard != ''">#{checkStandard},</if>
+            <if test="photos != null and photos != ''">#{photos},</if>
+            <if test="questionDescription != null and questionDescription != ''">#{questionDescription},</if>
+            <if test="checkResult != null and checkResult != ''">#{checkResult},</if>
+            <if test="rectificationMeasures != null and rectificationMeasures != ''">#{rectificationMeasures},</if>
+            <if test="rectificationEffect != null and rectificationEffect != ''">#{rectificationEffect},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="picNumber != null">#{picNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateQualityCheck" parameterType="QualityCheck">
+        update quality_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="checkItem != null and checkItem != ''">check_item = #{checkItem},</if>
+            <if test="checkStandard != null and checkStandard != ''">check_standard = #{checkStandard},</if>
+            <if test="photos != null and photos != ''">photos = #{photos},</if>
+            <if test="questionDescription != null and questionDescription != ''">question_description = #{questionDescription},</if>
+            <if test="checkResult != null and checkResult != ''">check_result = #{checkResult},</if>
+            <if test="rectificationMeasures != null and rectificationMeasures != ''">rectification_measures = #{rectificationMeasures},</if>
+            <if test="rectificationEffect != null and rectificationEffect != ''">rectification_effect = #{rectificationEffect},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="picNumber != null">pic_number = #{picNumber},</if>
+        </trim>
+        where check_id = #{checkId}
+    </update>
+
+    <delete id="deleteQualityCheckByCheckId" parameterType="Long">
+        delete from quality_check where check_id = #{checkId}
+    </delete>
+
+    <delete id="deleteQualityCheckByCheckIds" parameterType="String">
+        delete from quality_check where check_id in 
+        <foreach item="checkId" collection="array" open="(" separator="," close=")">
+            #{checkId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.CheckViews.mapper.CheckViewsMapper">
+    
+    <resultMap type="CheckViews" id="CheckViewsResult">
+        <result property="wbs"    column="wbs"    />
+        <result property="views"    column="views"    />
+    </resultMap>
+
+    <sql id="selectCheckViewsVo">
+        select wbs, views from check_views
+    </sql>
+
+    <select id="selectCheckViewsList" parameterType="CheckViews" resultMap="CheckViewsResult">
+        <include refid="selectCheckViewsVo"/>
+        <where>  
+            <if test="wbs != null  and wbs != ''"> and wbs = #{wbs}</if>
+            <if test="views != null  and views != ''"> and views = #{views}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckViewsByWbs" parameterType="String" resultMap="CheckViewsResult">
+        <include refid="selectCheckViewsVo"/>
+        where wbs = #{wbs}
+    </select>
+
+    <insert id="insertCheckViews" parameterType="CheckViews">
+        insert into check_views
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">wbs,</if>
+            <if test="views != null">views,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">#{wbs},</if>
+            <if test="views != null">#{views},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckViews" parameterType="CheckViews">
+        update check_views
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="views != null">views = #{views},</if>
+        </trim>
+        where wbs = #{wbs}
+    </update>
+
+    <delete id="deleteCheckViewsByWbs" parameterType="String">
+        delete from check_views where wbs = #{wbs}
+    </delete>
+
+    <delete id="deleteCheckViewsByWbss" parameterType="String">
+        delete from check_views where wbs in 
+        <foreach item="wbs" collection="array" open="(" separator="," close=")">
+            #{wbs}
+        </foreach>
+    </delete>
+</mapper>

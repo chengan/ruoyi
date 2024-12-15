@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.AcceptanceReport.mapper.AcceptanceReportMapper">
+
+    <resultMap type="AcceptanceReport" id="AcceptanceReportResult">
+        <result property="acceptanceId"    column="acceptance_id"    />
+        <result property="wbs"    column="wbs"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="checkItem"    column="check_item"    />
+        <result property="company"    column="company"    />
+        <result property="checkResult"    column="check_result"    />
+        <result property="photo"    column="photo"    />
+        <result property="questionDescription"    column="question_description"    />
+        <result property="revise"    column="revise"    />
+        <result property="checkTime"    column="check_time"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="picNumber"    column="pic_number"    />
+    </resultMap>
+
+    <sql id="selectAcceptanceReportVo">
+        select acceptance_id, wbs, item_id, item_name, check_item, company, check_result, photo, question_description, revise, check_time, upload_time, pic_number from acceptance_report
+    </sql>
+
+    <select id="selectAcceptanceReportList" parameterType="AcceptanceReport" resultMap="AcceptanceReportResult">
+        <include refid="selectAcceptanceReportVo"/>
+        <where>
+            <if test="wbs != null  and wbs != ''"> and wbs = #{wbs}</if>
+            <if test="itemId != null "> and item_id = #{itemId}</if>
+            <if test="itemName != null  and itemName != ''"> and item_name like concat('%', #{itemName}, '%')</if>
+            <if test="checkItem != null  and checkItem != ''"> and check_item = #{checkItem}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="checkResult != null  and checkResult != ''"> and check_result = #{checkResult}</if>
+            <if test="checkTime != null "> and check_time = #{checkTime}</if>
+            <if test="params.beginUploadTime != null and params.beginUploadTime != '' and params.endUploadTime != null and params.endUploadTime != ''"> and upload_time between #{params.beginUploadTime} and #{params.endUploadTime}</if>
+            <if test="picNumber != null "> and pic_number = #{picNumber}</if>
+        </where>
+    </select>
+
+    <select id="selectAcceptanceReportByAcceptanceId" parameterType="Long" resultMap="AcceptanceReportResult">
+        <include refid="selectAcceptanceReportVo"/>
+        where acceptance_id = #{acceptanceId}
+    </select>
+
+    <insert id="insertAcceptanceReport" parameterType="AcceptanceReport" useGeneratedKeys="true" keyProperty="acceptanceId">
+        insert into acceptance_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">wbs,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="itemName != null">item_name,</if>
+            <if test="checkItem != null">check_item,</if>
+            <if test="company != null">company,</if>
+            <if test="checkResult != null">check_result,</if>
+            <if test="photo != null">photo,</if>
+            <if test="questionDescription != null">question_description,</if>
+            <if test="revise != null">revise,</if>
+            <if test="checkTime != null">check_time,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="picNumber != null">pic_number,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wbs != null">#{wbs},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="itemName != null">#{itemName},</if>
+            <if test="checkItem != null">#{checkItem},</if>
+            <if test="company != null">#{company},</if>
+            <if test="checkResult != null">#{checkResult},</if>
+            <if test="photo != null">#{photo},</if>
+            <if test="questionDescription != null">#{questionDescription},</if>
+            <if test="revise != null">#{revise},</if>
+            <if test="checkTime != null">#{checkTime},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="picNumber != null">#{picNumber},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAcceptanceReport" parameterType="AcceptanceReport">
+        update acceptance_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wbs != null">wbs = #{wbs},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="checkItem != null">check_item = #{checkItem},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="checkResult != null">check_result = #{checkResult},</if>
+            <if test="photo != null">photo = #{photo},</if>
+            <if test="questionDescription != null">question_description = #{questionDescription},</if>
+            <if test="revise != null">revise = #{revise},</if>
+            <if test="checkTime != null">check_time = #{checkTime},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="picNumber != null">pic_number = #{picNumber},</if>
+        </trim>
+        where acceptance_id = #{acceptanceId}
+    </update>
+
+    <delete id="deleteAcceptanceReportByAcceptanceId" parameterType="Long">
+        delete from acceptance_report where acceptance_id = #{acceptanceId}
+    </delete>
+
+    <delete id="deleteAcceptanceReportByAcceptanceIds" parameterType="String">
+        delete from acceptance_report where acceptance_id in
+        <foreach item="acceptanceId" collection="array" open="(" separator="," close=")">
+            #{acceptanceId}
+        </foreach>
+    </delete>
+</mapper>
